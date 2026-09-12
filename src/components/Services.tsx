@@ -1,15 +1,9 @@
-import { ArrowRight } from '@phosphor-icons/react';
-import './services.css';
-
-type ServicesProps = {
-  onContact: (type?: string) => void;
-};
+import './services.css'
 
 const services = [
   {
     number: '01',
     category: 'Live Events',
-    contactType: 'Live events',
     lines: ['WE BRING', 'THE ENERGY.'],
     description:
       'From the first soundcheck to the final encore. Concerts, festivals, and live experiences that bring people together and leave the room buzzing.',
@@ -17,25 +11,23 @@ const services = [
   },
   {
     number: '02',
-    category: 'Private Celebrations',
-    contactType: 'Private celebrations',
-    lines: ['WE MAKE', 'IT PERSONAL.'],
+    category: 'Live Events',
+    lines: ['WE OWN', 'THE NIGHT.'],
     description:
-      'The big days. The little details. Weddings, milestone moments, and celebrations shaped around your story, with every element thoughtfully brought together.',
-    image: '/images/wedding.jpg',
+      'Club nights and late sets. Dance floors in full swing, a DJ on the decks, and a room that lets go until the lights come up.',
+    image: '/images/dj.jpg',
   },
   {
     number: '03',
-    category: 'Brand Experiences',
-    contactType: 'Brand experiences',
-    lines: ['WE MAKE AN', 'IMPRESSION.'],
+    category: 'Live Events',
+    lines: ['WE MAKE IT', 'UNFORGETTABLE.'],
     description:
-      'Give people something to be part of. Product launches, conferences, and brand activations that turn your ideas into experiences people remember.',
-    image: '/images/conference.jpg',
+      'One-offs, tour stops, and arena moments. Full production from front to back, built to be felt long after the lights go down.',
+    image: '/images/purple-concert.jpg',
   },
 ];
 
-export default function Services({ onContact }: ServicesProps) {
+export default function Services() {
   return (
     <section
       id="services"
@@ -67,15 +59,6 @@ export default function Services({ onContact }: ServicesProps) {
 
               <div className="trn-service__details">
                 <p className="trn-service__description">{service.description}</p>
-                <button
-                  type="button"
-                  className="trn-service__button"
-                  aria-label={`Plan your ${service.contactType.toLowerCase()} with TRN Events`}
-                  onClick={() => onContact(service.contactType)}
-                >
-                  <span>Plan your event</span>
-                  <ArrowRight size={18} weight="regular" aria-hidden="true" />
-                </button>
               </div>
             </div>
 

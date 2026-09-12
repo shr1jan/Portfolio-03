@@ -101,40 +101,6 @@
   letter-spacing: -0.025em;
 }
 
-.trn-service__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.2vw;
-  min-height: 44px;
-  margin-top: 1.25vw;
-  padding: 5px 0;
-  border: 0;
-  border-bottom: 1px solid var(--paper, #f8f7f6);
-  border-radius: 0;
-  background: transparent;
-  color: var(--paper, #f8f7f6);
-  font-family: 'Work Sans Variable', 'Work Sans', sans-serif;
-  font-size: max(12px, 1vw);
-  font-weight: 500;
-  line-height: 1.2;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.trn-service__button svg {
-  transition: transform 250ms ease;
-}
-
-.trn-service__button:hover svg {
-  transform: translateX(4px);
-}
-
-.trn-service__button:focus-visible {
-  outline: 2px solid var(--paper, #f8f7f6);
-  outline-offset: 5px;
-}
-
 .trn-service__number {
   display: block;
   align-self: flex-end;
@@ -213,12 +179,6 @@
 
   .trn-service__description {
     font-size: max(14px, 3.6vw);
-  }
-
-  .trn-service__button {
-    gap: 5vw;
-    margin-top: 4vw;
-    font-size: max(12px, 3.2vw);
   }
 
   .trn-service__number {

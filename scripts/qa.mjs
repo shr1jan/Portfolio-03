@@ -23,37 +23,8 @@ for (const width of [390, 768, 1024, 1440]) {
   record(`No horizontal overflow at ${width}px`, overflow.document <= width && overflow.body <= width, overflow)
 }
 
-for (const width of [1440, 390]) {
-  await page.setViewportSize({ width, height: width === 390 ? 844 : 900 })
-  await page.getByRole('button', { name: 'MENU', exact: true }).click()
-  record(`Menu opens at ${width}px`, await page.locator('.menu-dialog').evaluate(el => el.open))
-  await page.keyboard.press('Escape')
-  record(`Menu Escape restores focus at ${width}px`, await page.locator('.menu-trigger').evaluate(el => document.activeElement === el))
-  for (const label of ['Projects', 'Services', 'About', 'Home']) {
-    await page.getByRole('button', { name: 'MENU', exact: true }).click()
-    await page.locator('.menu-links').getByRole('link', { name: new RegExp(label, 'i') }).click()
-    await page.waitForTimeout(1800)
-    const state = await page.evaluate((id) => ({ open: document.querySelector('.menu-dialog').open, hash: location.hash, top: document.querySelector(id).getBoundingClientRect().top }), `#${label.toLowerCase()}`)
-    record(`${width}px menu ${label} navigates`, !state.open && state.hash === `#${label.toLowerCase()}` && Math.abs(state.top) < 10, state)
-  }
-}
-
 await page.setViewportSize({ width: 1440, height: 900 })
-for (const [index, type] of ['Live events', 'Private celebrations', 'Brand experiences'].entries()) {
-  const button = page.locator('.trn-service__button').nth(index)
-  await button.focus()
-  await page.waitForTimeout(550)
-  const focusedVisibility = await page.locator('.trn-service__details').nth(index).evaluate(el => getComputedStyle(el).opacity)
-  record(`Service ${type} keyboard reveals description`, focusedVisibility === '1', { opacity: focusedVisibility })
-  await page.keyboard.press('Enter')
-  const opened = await page.locator('.contact-dialog').evaluate(el => el.open)
-  const selected = await page.locator('#contact-type').inputValue()
-  record(`Service ${type} opens matching enquiry`, opened && selected === type, { selected })
-  await page.keyboard.press('Escape')
-  record(`Contact Escape restores ${type} focus`, await button.evaluate(el => document.activeElement === el))
-}
-
-await page.locator('.header-contact').click()
+await page.locator('.moments-footer .button').click()
 await page.getByRole('button', { name: 'Prepare my enquiry' }).click()
 const requiredState = await page.evaluate(() => ({ valid: document.querySelector('.contact-form').checkValidity(), active: document.activeElement.id, mailto: window.__qaMailto ?? null }))
 record('Empty enquiry is blocked by required validation', !requiredState.valid && requiredState.active === 'contact-name' && requiredState.mailto === null, requiredState)
@@ -64,14 +35,14 @@ await page.getByRole('button', { name: 'Prepare my enquiry' }).click()
 const invalid = await page.locator('#contact-email').evaluate(el => !el.validity.valid && document.activeElement === el)
 record('Invalid email is blocked', invalid)
 await page.locator('#contact-email').fill('qa@example.com')
-await page.locator('#contact-type').selectOption('Private celebrations')
+await page.locator('#contact-type').selectOption('Live events')
 await page.locator('#contact-date').fill('2026-12-31')
 await page.getByRole('button', { name: 'Prepare my enquiry' }).click()
 const mailto = await page.evaluate(() => window.__qaMailto ?? '')
 const decoded = decodeURIComponent(mailto)
-record('Enquiry prepares complete mailto URI', decoded.startsWith('mailto:trnevents@gmail.com?') && decoded.includes('Private celebrations | QA Example') && decoded.includes('Email: qa@example.com') && decoded.includes('2026-12-31') && decoded.includes('Testing an event enquiry'), { mailto: decoded })
+record('Enquiry prepares complete mailto URI', decoded.startsWith('mailto:trnevents@gmail.com?') && decoded.includes('Live events | QA Example') && decoded.includes('Email: qa@example.com') && decoded.includes('2026-12-31') && decoded.includes('Testing an event enquiry'), { mailto: decoded })
 await page.getByRole('button', { name: 'Close enquiry form' }).click()
-record('Contact close button restores header trigger focus', await page.locator('.header-contact').evaluate(el => document.activeElement === el))
+record('Contact close button restores moments trigger focus', await page.locator('.moments-footer .button').evaluate(el => document.activeElement === el))
 
 await page.getByRole('button', { name: 'Turn sound on', exact: true }).click()
 record('Sound toggles on', await page.getByRole('button', { name: 'Turn sound off', exact: true }).getAttribute('aria-pressed') === 'true')

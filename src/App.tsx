@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, List, Pause, Play, X } from '@phosphor-icons/react'
+import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, Pause, Play, X } from '@phosphor-icons/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import Services from './components/Services'
+import UpcomingEvents from './components/Events'
 import ContactDialog from './components/ContactDialog'
 import WelcomeDialog from './components/WelcomeDialog'
 
@@ -12,8 +13,8 @@ gsap.registerPlugin(ScrollTrigger)
 const navigation = [{ label: 'Home', href: '#home' }, { label: 'Projects', href: '#projects' }, { label: 'Services', href: '#services' }, { label: 'About', href: '#about' }]
 const experiences = [
   { title: 'AFTER DARK.', category: 'Live events', image: 'purple-concert.jpg', alt: 'An audience beneath purple spotlights at a live concert', description: 'The lights drop. The crowd comes alive. We bring together the stage, sound, production, and people for a night that stays with you.' },
-  { title: 'IN GOOD COMPANY.', category: 'Private celebrations', image: 'wedding.jpg', alt: 'A beautifully set celebration table with flowers and candlelight', description: 'A room full of your favourite people, with every detail feeling like you. From intimate dinners to once-in-a-lifetime celebrations, let’s make it personal.' },
-  { title: 'MAKE SOME NOISE.', category: 'Brand experiences', image: 'confetti.jpg', alt: 'A festival audience surrounded by colourful light and confetti', description: 'Give people something to be part of. Launches, activations, and experiences that bring your brand out into the world and get people talking.' },
+  { title: 'FESTIVAL SEASON.', category: 'Live events', image: 'festival.jpg', alt: 'A huge outdoor music festival stage at night', description: 'Weekends built for thousands. Big stages, bigger sounds, and a sea of people moving as one from the opening act to the final encore.' },
+  { title: 'CLUB NIGHTS.', category: 'Live events', image: 'dj.jpg', alt: 'A DJ performing in magenta stage light', description: 'Dance floors, strobes, and sweat. Late sets where the DJ takes over and the room lets go until the lights come up.' },
 ]
 const galleryImages = [
   { image: 'gala.jpg', projectIndex: 1, alt: 'A formal dinner setting in an ornate venue' },
@@ -32,9 +33,7 @@ function App() {
   const root = useRef<HTMLDivElement>(null)
   const galleryDrag = useRef<{ start: number; offset: number; active: boolean }>({ start: 0, offset: 0, active: false })
   const lenis = useRef<Lenis | null>(null)
-  const menu = useRef<HTMLDialogElement>(null)
   const projectDialog = useRef<HTMLDialogElement>(null)
-  const [menuOpen, setMenuOpen] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
   const [eventType, setEventType] = useState<string>()
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
@@ -42,7 +41,6 @@ function App() {
   const [welcomeOpen, setWelcomeOpen] = useState(true)
 
   const openContact = (type?: string) => {
-    setMenuOpen(false)
     setSelectedProject(null)
     setEventType(type)
     setContactOpen(true)
@@ -87,8 +85,6 @@ function App() {
     let lightRanges: [number, number][] = []
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     const accentChips: { el: HTMLElement | null; light: string; dark: string }[] = [
-      { el: document.querySelector('.header-contact'), light: '#000080', dark: '#ff0033' },
-      { el: document.querySelector('.menu-trigger'), light: '#171717', dark: '#f8f7f6' },
       { el: document.querySelector('.brand-mark'), light: '#000080', dark: '#ff0033' },
     ]
     let wasLight: boolean | null = null
@@ -139,35 +135,17 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (menuOpen) menu.current?.showModal()
-    else menu.current?.close()
-  }, [menuOpen])
-
-  useEffect(() => {
     if (selectedProject !== null) projectDialog.current?.showModal()
     else projectDialog.current?.close()
   }, [selectedProject])
 
   useEffect(() => {
-    const locked = menuOpen || contactOpen || selectedProject !== null
+    const locked = contactOpen || selectedProject !== null
     if (locked) lenis.current?.stop()
     else lenis.current?.start()
     document.body.style.overflow = locked ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [menuOpen, contactOpen, selectedProject])
-
-  const jumpTo = (href: string) => {
-    setMenuOpen(false)
-    requestAnimationFrame(() => {
-      lenis.current?.start()
-      const target = document.querySelector<HTMLElement>(href)
-      if (target) {
-        if (lenis.current) lenis.current.scrollTo(target, { offset: 0 })
-        else target.scrollIntoView()
-        history.replaceState(null, '', href)
-      }
-    })
-  }
+  }, [contactOpen, selectedProject])
 
   return (
     <div ref={root} className={motionPaused ? 'site motion-paused' : 'site'}>
@@ -175,10 +153,6 @@ function App() {
       <header className="site-header">
         <div className="header-left">
           <a href="#home" className="brand-mark" aria-label="TRN Events home" />
-        </div>
-        <div className="header-right">
-          <button className="button button-red header-contact cornered" onClick={() => openContact()}><RollingLabel>START AN EVENT</RollingLabel><ArrowUpRight size={14} /></button>
-          <button className="button menu-trigger cornered" onClick={() => setMenuOpen(true)} aria-haspopup="dialog" aria-expanded={menuOpen}><RollingLabel>MENU</RollingLabel><List size={19} /></button>
         </div>
       </header>
 
@@ -220,19 +194,21 @@ function App() {
           <div className="manifesto-bottom" data-reveal><ArrowDownRight size={42} weight="light" /><p>From the first idea to the final encore,<br />we bring your world together.</p><a href="#about" className="text-link"><RollingLabel>MEET TRN EVENTS</RollingLabel><ArrowUpRight size={19} /></a></div>
         </section>
 
+        <UpcomingEvents onContact={openContact} />
+
         <section className="projects" id="projects">
-          <div className="project-heading"><div><span className="tiny-label">[ EVENT INSPIRATION ]</span><h2>MADE TO BE <span className="red-text">FELT.</span></h2></div><p>A glimpse of what’s possible.<br />Imagine what we could make together.</p></div>
+          <div className="project-heading"><div><span className="tiny-label">[ EVENT INSPIRATION ]</span><h2>PAST <span className="red-text">EVENTS.</span></h2></div><p>A glimpse of our work.</p></div>
           <div className="project-track">
             {experiences.map((project, index) => <button className="project-card" key={project.title} onClick={() => setSelectedProject(index)} aria-label={`Explore ${project.category.toLowerCase()}`}>
               <div className="project-image"><img src={`/images/${project.image}`} alt={project.alt} loading="lazy" width="1200" height="800" /><span className="project-view">EXPLORE<ArrowUpRight size={22} /></span></div>
               <div className="project-caption"><h3>{project.title}</h3><span className="tiny-label">{project.category}<ArrowUpRight size={18} /></span></div>
             </button>)}
           </div>
-          <div className="projects-bottom"><span className="tiny-label">LIVE EVENTS / PRIVATE CELEBRATIONS / BRAND EXPERIENCES</span><span className="project-direction" aria-hidden="true"><ArrowRight size={28} /></span></div>
+          <div className="projects-bottom"><span className="tiny-label">LIVE EVENTS / CONCERTS / FESTIVALS</span><span className="project-direction" aria-hidden="true"><ArrowRight size={28} /></span></div>
         </section>
 
         <section className="about section-pad" id="about">
-          <div className="about-intro"><h2 data-reveal>WE’RE<br />TRN<span className="red-text">.</span></h2><div className="about-copy" data-reveal><span className="tiny-label">[ THE PEOPLE BEHIND THE MOMENT ]</span><p>Big crowds. Close friends. Bold ideas. Whatever brings you together, we make it an experience worth showing up for.</p><p className="muted-text">We’re a hands-on events team with a love for the details. The sound, the space, the atmosphere. It all matters.</p><button className="text-link" onClick={() => openContact()}><RollingLabel>LET’S GET TO KNOW EACH OTHER</RollingLabel><ArrowUpRight size={19} /></button></div></div>
+          <div className="about-intro"><h2 data-reveal>WE’RE<br />TRN<span className="red-text">.</span></h2><div className="about-copy" data-reveal><span className="tiny-label">[ THE PEOPLE BEHIND THE MOMENT ]</span><p>Big crowds. Close friends. Bold ideas. Whatever brings you together, we make it an experience worth showing up for.</p><p className="muted-text">We’re a hands-on events team with a love for the details. The sound, the space, the atmosphere. It all matters.</p></div></div>
           <div className="statement"><h2><span className="soft-word">FROM THE FIRST</span> <span className="soft-word red-text">“WHAT IF”</span><br /><span className="soft-word">TO THE FINAL</span> <span className="soft-word red-text">“ONE MORE.”</span><br /><span className="soft-word">WE’RE ALL IN.</span></h2></div>
         </section>
 
@@ -241,7 +217,7 @@ function App() {
           <button className="motion-toggle" onClick={() => setMotionPaused(!motionPaused)} aria-label={motionPaused ? 'Play moving text' : 'Pause moving text'}>{motionPaused ? <Play size={14} /> : <Pause size={14} />}</button>
         </div>
 
-        <Services onContact={openContact} />
+        <Services />
 
         <section className="moments section-pad" aria-labelledby="moments-title">
           <div className="moments-heading"><span className="tiny-label">[ THE BIG PICTURE. THE LITTLE DETAILS. ]</span><span className="tiny-label">THAT’S WHERE THE MAGIC IS.</span></div>
@@ -249,25 +225,11 @@ function App() {
           <div className="moments-footer"><h2 id="moments-title" data-reveal>LESS ORDINARY.<br /><span className="red-text">MORE “YOU HAD TO BE THERE.”</span></h2><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
         </section>
 
-        <section className="approach section-pad">
-          <div className="approach-heading" data-reveal><span className="tiny-label">[ FROM START TO STANDING OVATION ]</span><h2>EVERY.<br /><span className="outline-text">LITTLE.</span> DETAIL.</h2></div>
-          <div className="approach-row" data-reveal><div className="approach-image"><img className="parallax-image" src="/images/wedding.jpg" alt="Carefully arranged flowers, glassware, and candles" loading="lazy" width="600" height="400" /></div><div className="approach-copy"><span className="tiny-label">BEFORE THE DOORS OPEN</span><h3>Your vision. A real plan.</h3><p>We listen, ask the right questions, and turn the big idea into all the little things that make it work.</p></div><span className="approach-word">PLAN.</span></div>
-          <div className="approach-row" data-reveal><div className="approach-image"><img className="parallax-image" src="/images/hero-concert.jpg" alt="A crowd enjoying a live show" loading="lazy" width="600" height="400" /></div><div className="approach-copy"><span className="tiny-label">WHEN IT ALL COMES TOGETHER</span><h3>You’re in the moment.</h3><p>We’re behind the scenes keeping everything moving, so you can be right where you belong. Part of it.</p></div><span className="approach-word">LIVE.</span></div>
-        </section>
-
         <footer className="footer section-pad" id="contact">
-          <div className="footer-invite"><h2 data-reveal>GOT SOMETHING IN MIND?<br /><span className="red-text">LET’S MAKE IT HAPPEN.</span></h2><button className="footer-contact" onClick={() => openContact()} aria-label="Start an event enquiry"><ArrowUpRight weight="light" /></button></div>
-          <a className="footer-email text-link" href="mailto:trnevents@gmail.com">trnevents@gmail.com<ArrowUpRight size={20} /></a>
           <div className="footer-main"><a className="footer-brand" href="#home" aria-label="TRN Events home">TRN<span className="red-text">.</span><br />EVENTS</a><div className="footer-links"><span className="tiny-label">COME ON IN</span>{navigation.map((item) => <a key={item.label} href={item.href}>{item.label}<ArrowUpRight size={15} /></a>)}<button onClick={() => openContact()}>Contact<ArrowUpRight size={15} /></button></div><div className="footer-note"><span className="tiny-label">GOOD PEOPLE. GREAT MOMENTS.</span><p>Bring your idea.<br />We’ll bring the energy.</p><a href="mailto:trnevents@gmail.com">trnevents@gmail.com</a></div></div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} TRN EVENTS. ALL RIGHTS RESERVED.</span><span>MADE TO BE FELT.</span><a href="#home">BACK TO TOP <ArrowUpRight size={14} /></a></div>
         </footer>
       </main>
-
-      <dialog className="menu-dialog" ref={menu} onCancel={() => setMenuOpen(false)} aria-label="Site navigation" data-lenis-prevent>
-        <div className="menu-top"><a href="#home" onClick={(event) => { event.preventDefault(); jumpTo('#home') }} className="menu-brand">TRN. EVENTS</a><button className="button menu-close cornered" onClick={() => setMenuOpen(false)} autoFocus>CLOSE<X size={18} /></button></div>
-        <nav className="menu-links">{navigation.map((item, index) => <a style={{ '--item-index': index } as React.CSSProperties} href={item.href} key={item.label} onClick={(event) => { event.preventDefault(); jumpTo(item.href) }}><span className="tiny-label">[ 0{index + 1} ]</span><RollingLabel>{item.label.toUpperCase()}</RollingLabel><ArrowUpRight /></a>)}<button onClick={() => openContact()}><span className="tiny-label">[ 05 ]</span><RollingLabel>LET’S TALK</RollingLabel><ArrowUpRight /></button></nav>
-        <div className="menu-bottom"><span>BIG IDEAS. UNFORGETTABLE MOMENTS.</span><a href="mailto:trnevents@gmail.com">trnevents@gmail.com<ArrowUpRight size={15} /></a></div>
-      </dialog>
 
       <dialog className="project-dialog" ref={projectDialog} onCancel={() => setSelectedProject(null)} onClick={(event) => { if (event.target === event.currentTarget) setSelectedProject(null) }} aria-labelledby="project-title" data-lenis-prevent>
         {selectedProject !== null && <div className="project-dialog-inner"><button className="dialog-close" onClick={() => setSelectedProject(null)} aria-label="Close event inspiration" autoFocus><X size={24} /></button><img className="project-dialog-image" src={`/images/${experiences[selectedProject].image}`} alt={experiences[selectedProject].alt} /><div className="project-dialog-copy"><span className="tiny-label">{experiences[selectedProject].category} / EVENT INSPIRATION</span><h2 id="project-title">{experiences[selectedProject].title}</h2><p>{experiences[selectedProject].description}</p><button className="button button-red" onClick={() => openContact(experiences[selectedProject].category)}>MAKE SOMETHING LIKE THIS<ArrowUpRight size={18} /></button></div></div>}

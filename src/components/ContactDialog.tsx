@@ -9,7 +9,7 @@ type ContactDialogProps = {
 }
 
 const emailAddress = 'trnevents@gmail.com'
-const eventTypes = ['Live events', 'Private celebrations', 'Brand experiences', 'Something else']
+const eventTypes = ['Live events', 'Something else']
 
 function selectedEventType(value?: string) {
   return eventTypes.find((option) => option.toLowerCase() === value?.toLowerCase()) ?? 'Something else'
