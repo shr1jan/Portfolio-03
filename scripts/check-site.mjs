@@ -1,0 +1,15 @@
+import { chromium } from '@playwright/test';
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://localhost:5173',{waitUntil:'networkidle'});await page.waitForTimeout(1700);
+await page.screenshot({path:'/tmp/trn-desktop-hero.png'});
+await page.mouse.wheel(0,800);await page.waitForTimeout(1500);await page.screenshot({path:'/tmp/trn-desktop-transition.png'});
+await page.mouse.wheel(0,1000);await page.waitForTimeout(1500);await page.screenshot({path:'/tmp/trn-desktop-projects.png'});
+console.log({errors,images:await page.locator('img').evaluateAll(es=>es.filter(e=>!e.complete||e.naturalWidth===0).map(e=>e.src)),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)});
+await page.getByRole('button',{name:'MENU',exact:true}).click();await page.waitForTimeout(400);await page.screenshot({path:'/tmp/trn-menu.png'});await page.keyboard.press('Escape');
+await page.getByRole('button',{name:'START AN EVENT',exact:true}).click();await page.waitForTimeout(400);await page.screenshot({path:'/tmp/trn-contact.png'});await page.keyboard.press('Escape');
+await page.setViewportSize({width:390,height:844});await page.evaluate(()=>window.scrollTo(0,0));await page.waitForTimeout(1400);await page.screenshot({path:'/tmp/trn-mobile-hero.png'});
+await page.emulateMedia({reducedMotion:'reduce'});await page.waitForTimeout(300);await page.screenshot({path:'/tmp/trn-mobile-full.png',fullPage:true});
+console.log({mobileOverflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),bodyOverflow:await page.evaluate(()=>document.body.style.overflow)});
+await browser.close();
