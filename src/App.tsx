@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import Services from './components/Services'
 import ContactDialog from './components/ContactDialog'
+import WelcomeDialog from './components/WelcomeDialog'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -38,6 +39,7 @@ function App() {
   const [eventType, setEventType] = useState<string>()
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
   const [motionPaused, setMotionPaused] = useState(false)
+  const [welcomeOpen, setWelcomeOpen] = useState(true)
 
   const openContact = (type?: string) => {
     setMenuOpen(false)
@@ -271,6 +273,7 @@ function App() {
         {selectedProject !== null && <div className="project-dialog-inner"><button className="dialog-close" onClick={() => setSelectedProject(null)} aria-label="Close event inspiration" autoFocus><X size={24} /></button><img className="project-dialog-image" src={`/images/${experiences[selectedProject].image}`} alt={experiences[selectedProject].alt} /><div className="project-dialog-copy"><span className="tiny-label">{experiences[selectedProject].category} / EVENT INSPIRATION</span><h2 id="project-title">{experiences[selectedProject].title}</h2><p>{experiences[selectedProject].description}</p><button className="button button-red" onClick={() => openContact(experiences[selectedProject].category)}>MAKE SOMETHING LIKE THIS<ArrowUpRight size={18} /></button></div></div>}
       </dialog>
       <ContactDialog open={contactOpen} onClose={() => setContactOpen(false)} eventType={eventType} />
+      <WelcomeDialog open={welcomeOpen} onClose={() => setWelcomeOpen(false)} />
     </div>
   )
 }
