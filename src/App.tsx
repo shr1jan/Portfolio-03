@@ -27,36 +27,6 @@ function RollingLabel({ children }: { children: string }) {
   return <span className="rolling-label"><span>{children}</span><span aria-hidden="true">{children}</span></span>
 }
 
-function useAmbientSound() {
-  const [enabled, setEnabled] = useState(false)
-  const context = useRef<AudioContext | null>(null)
-  const gain = useRef<GainNode | null>(null)
-  useEffect(() => () => { void context.current?.close() }, [])
-  const toggle = async () => {
-    try {
-      if (!context.current) {
-        const audio = new AudioContext()
-        context.current = audio
-        const output = audio.createGain()
-        output.gain.value = 0
-        output.connect(audio.destination)
-        gain.current = output
-        ;[110, 164.81, 220.18, 277.18].forEach((frequency) => {
-          const oscillator = audio.createOscillator()
-          oscillator.type = 'sine'
-          oscillator.frequency.value = frequency
-          oscillator.connect(output)
-          oscillator.start()
-        })
-      }
-      await context.current.resume()
-      gain.current!.gain.setTargetAtTime(enabled ? 0 : 0.012, context.current.currentTime, 0.3)
-      setEnabled(!enabled)
-    } catch { setEnabled(false) }
-  }
-  return { enabled, toggle }
-}
-
 function App() {
   const root = useRef<HTMLDivElement>(null)
   const galleryDrag = useRef<{ start: number; offset: number; active: boolean }>({ start: 0, offset: 0, active: false })
@@ -68,7 +38,6 @@ function App() {
   const [eventType, setEventType] = useState<string>()
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
   const [motionPaused, setMotionPaused] = useState(false)
-  const { enabled: soundOn, toggle: toggleSound } = useAmbientSound()
 
   const openContact = (type?: string) => {
     setMenuOpen(false)
@@ -95,6 +64,7 @@ function App() {
         const hero = gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom bottom', scrub: 0.8 } })
         hero.to('.hero-photo', { yPercent: -100, ease: 'none' }, 0)
           .to('.hero-title', { color: '#171717', scale: 0.76, ease: 'none' }, 0.22)
+          .to('.brand-period', { color: '#000080', ease: 'none' }, 0.22)
           .to('.hero-bottom, .hero-side-note', { opacity: 0, duration: 0.12 }, 0)
           .fromTo('.hero-gallery', { yPercent: 135, y: 0 }, { yPercent: 0, y: 0, ease: 'none', duration: 0.65 }, 0.18)
           .fromTo('.hero-gallery-caption', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.65)
@@ -171,10 +141,6 @@ function App() {
       <header className="site-header">
         <div className="header-left">
           <a href="#home" className="brand-mark" aria-label="TRN Events home" />
-          <button className="sound-toggle" onClick={() => void toggleSound()} aria-pressed={soundOn} aria-label={soundOn ? 'Turn sound off' : 'Turn sound on'}>
-            <span className={soundOn ? 'sound-bars playing' : 'sound-bars'} aria-hidden="true"><i /><i /><i /><i /></span>
-            [ SOUND: {soundOn ? 'ON' : 'OFF'} ]
-          </button>
         </div>
         <div className="header-right">
           <button className="button button-red header-contact cornered" onClick={() => openContact()}><RollingLabel>START AN EVENT</RollingLabel><ArrowUpRight size={14} /></button>

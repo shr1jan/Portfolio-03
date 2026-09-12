@@ -62,7 +62,7 @@
 
 .contact-dialog__title {
   margin: 0 0 18px;
-  color: var(--red, #ff0033);
+  color: var(--accent, #000080);
   font-family: 'Koulen', Impact, sans-serif;
   font-size: clamp(64px, 9vw, 106px);
   line-height: .88;
@@ -100,7 +100,7 @@
 }
 
 .contact-form__field label > span:not(.contact-form__optional) {
-  color: var(--red, #ff0033);
+  color: var(--accent, #000080);
 }
 
 .contact-form__optional {
@@ -148,7 +148,7 @@
 .contact-form__field select:focus,
 .contact-form__field textarea:focus {
   outline: 0;
-  border-bottom: 2px solid var(--red, #ff0033);
+  border-bottom: 2px solid var(--accent, #000080);
   padding-bottom: 11px;
 }
 
@@ -167,10 +167,10 @@
   gap: 24px;
   min-height: 52px;
   padding: 14px 21px;
-  border: 1px solid var(--red, #ff0033);
+  border: 1px solid var(--accent, #000080);
   border-radius: 0;
   color: var(--ink, #171717);
-  background: var(--red, #ff0033);
+  background: var(--accent, #000080);
   font: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -258,7 +258,7 @@
 
 .contact-dialog__copy:hover,
 .contact-dialog__direct a:hover {
-  color: var(--red, #ff0033);
+  color: var(--accent, #000080);
 }
 
 .contact-dialog button:focus-visible,

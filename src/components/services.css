@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   width: 100%;
+  --accent: var(--red);
   background: var(--ink, #171717);
   color: var(--paper, #f8f7f6);
   scroll-margin-top: 70px;
@@ -59,7 +60,7 @@
 
 .trn-service__category {
   margin: 0;
-  color: var(--red, #ff0033);
+  color: var(--accent, #ff0033);
   font-family: 'Work Sans Variable', 'Work Sans', sans-serif;
   font-size: max(12px, 1vw);
   font-weight: 500;
@@ -143,7 +144,7 @@
   font-size: 12vw;
   font-weight: 400;
   line-height: 0.75;
-  -webkit-text-stroke: 1.5px var(--red, #ff0033);
+  -webkit-text-stroke: 1.5px var(--accent, #ff0033);
   transition: color 450ms ease;
 }
 
@@ -162,7 +163,7 @@
 }
 
 .trn-service:is(:hover, :focus-within) .trn-service__number {
-  color: var(--red, #ff0033);
+  color: var(--accent, #ff0033);
 }
 
 @media (min-width: 768px) and (max-width: 1100px) {
@@ -222,7 +223,7 @@
 
   .trn-service__number {
     margin-top: 9vw;
-    color: var(--red, #ff0033);
+    color: var(--accent, #ff0033);
     font-size: 25vw;
   }
 }
@@ -238,7 +239,7 @@
   }
 
   .trn-service__number {
-    color: var(--red, #ff0033);
+    color: var(--accent, #ff0033);
   }
 }
 
