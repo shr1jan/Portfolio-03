@@ -42,7 +42,7 @@ export default function WelcomeDialog({ open, onClose }: WelcomeDialogProps) {
         <button type="button" className="welcome-dialog__close" onClick={onClose} aria-label="Close welcome message" autoFocus>
           <X size={22} weight="light" aria-hidden="true" />
         </button>
-        <img className="welcome-dialog__image" src="/images/popup.jpg" alt="TRN Events welcome" />
+        <a className="welcome-dialog__link" href="https://mamagharentertainment.com" onClick={onClose}><img className="welcome-dialog__image" src="/images/popup.jpg" alt="Mamaghar Entertainment" /></a>
       </div>
     </dialog>
   )
