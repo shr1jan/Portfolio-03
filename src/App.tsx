@@ -83,12 +83,44 @@ function App() {
     }, root)
     const header = document.querySelector<HTMLElement>('.site-header')!
     let lightRanges: [number, number][] = []
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const accentChips: { el: HTMLElement | null; light: string; dark: string }[] = [
+      { el: document.querySelector('.header-contact'), light: '#000080', dark: '#ff0033' },
+      { el: document.querySelector('.menu-trigger'), light: '#171717', dark: '#f8f7f6' },
+      { el: document.querySelector('.brand-mark'), light: '#000080', dark: '#ff0033' },
+    ]
+    let wasLight: boolean | null = null
+    const wipeChips = (toLight: boolean, scrollUp: boolean) => {
+      if (prefersReducedMotion.matches) return
+      accentChips.forEach(({ el, light, dark }) => {
+        if (!el) return
+        const from = toLight ? dark : light
+        const to = toLight ? light : dark
+        const start = scrollUp ? '0% 0%' : '0% 100%'
+        const end = scrollUp ? '0% 100%' : '0% 0%'
+        const stops = scrollUp ? `${to} 50%, ${from} 50%` : `${from} 50%, ${to} 50%`
+        gsap.killTweensOf(el)
+        gsap.set(el, { backgroundImage: `linear-gradient(to top, ${stops})`, backgroundSize: '100% 200%', backgroundPosition: start, backgroundColor: from })
+        gsap.to(el, {
+          backgroundPosition: end,
+          duration: 0.185,
+          ease: 'power2.inOut',
+          onComplete: () => gsap.set(el, { backgroundImage: 'none', backgroundPosition: '0% 0%', backgroundColor: to }),
+        })
+      })
+    }
+    let lastScrollY = window.scrollY
     const updateHeader = () => {
       const current = window.scrollY + 44
+      const scrollUp = window.scrollY < lastScrollY
+      lastScrollY = window.scrollY
       const heroPhoto = document.querySelector<HTMLElement>('.hero-photo')!
       const heroSection = document.querySelector<HTMLElement>('.hero')!
-      const isHeroLight = current < heroSection.offsetHeight && heroPhoto.getBoundingClientRect().bottom < 44
-      header.classList.toggle('is-light', isHeroLight || lightRanges.some(([start, end]) => current >= start && current < end))
+      const heroLight = current < heroSection.offsetHeight && heroPhoto.getBoundingClientRect().bottom < 44
+      const light = heroLight || lightRanges.some(([start, end]) => current >= start && current < end)
+      header.classList.toggle('is-light', light)
+      if (wasLight !== null && light !== wasLight) wipeChips(light, !scrollUp)
+      wasLight = light
     }
     const measureRanges = () => {
       lightRanges = [...document.querySelectorAll<HTMLElement>('.manifesto, .moments, .footer')].map(element => {
