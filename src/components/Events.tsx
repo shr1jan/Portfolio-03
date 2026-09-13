@@ -6,10 +6,7 @@ type EventsProps = {
 }
 
 const upcomingEvents = [
-  { month: 'SEP', day: '19', title: 'AFTER DARK: OPENING NIGHT', venue: 'Club 141, Kathmandu' },
-  { month: 'OCT', day: '03', title: 'RHYTHM & BASS ARENA', venue: 'Everest Hall, Kathmandu' },
-  { month: 'OCT', day: '17', title: 'VALLEY SESSIONS', venue: 'Le Sherpa, Dhulikhel' },
-  { month: 'NOV', day: '07', title: 'PEAK SEASON TOUR', venue: 'Annapurna Amphitheatre, Pokhara' },
+  { month: 'MAR', day: '28', title: 'SUSHANT KC LIVE', venue: 'United Kingdom' },
 ]
 
 function RollingLabel({ children }: { children: string }) {

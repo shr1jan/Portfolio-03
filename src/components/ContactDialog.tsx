@@ -8,7 +8,7 @@ type ContactDialogProps = {
   eventType?: string
 }
 
-const emailAddress = 'trnevents@gmail.com'
+const emailAddress = 'trneventsnepal3@gmail.com'
 const eventTypes = ['Live events', 'Something else']
 
 function selectedEventType(value?: string) {

@@ -20,7 +20,21 @@ const experiences = [
   { title: 'FESTIVAL SEASON.', category: 'Live events', image: 'festival.jpg', alt: 'A huge outdoor music festival stage at night', description: 'Weekends built for thousands. Big stages, bigger sounds, and a sea of people moving as one from the opening act to the final encore.' },
   { title: 'CLUB NIGHTS.', category: 'Live events', image: 'dj.jpg', alt: 'A DJ performing in magenta stage light', description: 'Dance floors, strobes, and sweat. Late sets where the DJ takes over and the room lets go until the lights come up.' },
 ]
-const momentsImages = ['IMG_0661.JPEG', 'IMG_0662.JPEG', 'IMG_0665.JPEG', 'IMG_0666.JPEG', 'IMG_0669.JPEG', 'IMG_0673.JPEG', 'IMG_0674.JPG.jpeg', 'IMG_0675.JPG.jpeg', 'IMG_0676.JPG.jpeg']
+const picSources = ['IMG_0661.JPEG', 'IMG_0662.JPEG', 'IMG_0665.JPEG', 'IMG_0666.JPEG', 'IMG_0669.JPEG', 'IMG_0673.JPEG', 'IMG_0674.JPG.jpeg', 'IMG_0675.JPG.jpeg', 'IMG_0676.JPG.jpeg']
+
+function randomize<T>(items: readonly T[]): T[] {
+  const a = [...items]
+  do {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[a[i], a[j]] = [a[j], a[i]]
+    }
+  } while (a.some((v, i) => v === a[(i + 1) % a.length]))
+  return a
+}
+
+const heroGalleryImages = randomize(picSources)
+const momentsCarouselImages = randomize(picSources)
 
 function RollingLabel({ children }: { children: string }) {
   return <span className="rolling-label"><span>{children}</span><span aria-hidden="true">{children}</span></span>
@@ -148,12 +162,12 @@ function App() {
         <section className="hero" id="home" aria-label="TRN Events">
           <div className="hero-stage">
             <div className="hero-photo"><video className="hero-video" src="/images/hero-video.mp4" autoPlay muted loop playsInline preload="auto" /><div className="hero-shade" /></div>
-            <h1 className="hero-title" aria-label="TRN NEPAL"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">NEPAL</span></span></h1>
+            <h1 className="hero-title" aria-label="TRN Events Nepal"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">EVENTS</span></span><span className="word-clip"><span className="word-inner">NEPAL</span></span></h1>
             <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
             <div className="hero-gallery-caption"><span className="tiny-label">[ MORE THAN AN EVENT ]</span><p>It’s a feeling.<br />Let’s make it last.</p></div>
             <div className="hero-gallery" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
-              {[0, 1].map((copy) => <div className="hero-gallery-track" key={copy} aria-hidden={copy === 1}>{momentsImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}
+              {[0, 1].map((copy) => <div className="hero-gallery-track" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}
             </div>
           </div>
         </section>
@@ -167,7 +181,7 @@ function App() {
         <UpcomingEvents onContact={openContact} />
 
         <section className="projects" id="projects">
-          <div className="project-heading"><div><span className="tiny-label">[ EVENT INSPIRATION ]</span><h2>PAST <span className="red-text">EVENTS.</span></h2></div><p>A glimpse of our work.</p></div>
+          <div className="project-heading"><div><span className="tiny-label">[ EVENT INSPIRATION ]</span><h2>PAST <span className="red-text">EVENTS.</span></h2></div><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
           <div className="project-track">
             {experiences.map((project, index) => <button className="project-card" key={project.title} onClick={() => setSelectedProject(index)} aria-label={`Explore ${project.category.toLowerCase()}`}>
               <div className="project-image"><img src={`/images/${project.image}`} alt={project.alt} loading="lazy" width="1200" height="800" /><span className="project-view">EXPLORE<ArrowUpRight size={22} /></span></div>
@@ -189,12 +203,12 @@ function App() {
 
         <section className="moments section-pad" aria-labelledby="moments-title">
           <div className="moments-heading"><span className="tiny-label">[ THE BIG PICTURE. THE LITTLE DETAILS. ]</span><span className="tiny-label">THAT’S WHERE THE MAGIC IS.</span></div>
-          <div className="moment-gallery">{[0, 1].map((copy) => <div className="moment-track" key={copy} aria-hidden={copy === 1}>{momentsImages.map((image) => <div className="moment-image" key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div>
+          <div className="moment-gallery">{[0, 1].map((copy) => <div className="moment-track" key={copy} aria-hidden={copy === 1}>{momentsCarouselImages.map((image) => <div className="moment-image" key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div>
           <div className="moments-footer"><h2 id="moments-title" data-reveal>LESS ORDINARY.<br /><span className="red-text">MORE “YOU HAD TO BE THERE.”</span></h2><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
         </section>
 
         <footer className="footer section-pad" id="contact">
-          <div className="footer-main"><a className="footer-brand" href="#home" aria-label="TRN NEPAL home">TRN<span className="red-text">.</span><br />NEPAL</a><div className="footer-links"><span className="tiny-label">FOLLOW US</span>{socials.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}<ArrowUpRight size={15} /></a>)}</div><div className="footer-note"><span className="tiny-label">GOOD PEOPLE. GREAT MOMENTS.</span><p>Bring your idea.<br />We’ll bring the energy.</p><a href="mailto:trnevents@gmail.com">trnevents@gmail.com</a></div></div>
+          <div className="footer-main"><a className="footer-brand" href="#home" aria-label="TRN NEPAL home">TRN<span className="red-text">.</span><br />NEPAL</a><div className="footer-links"><span className="tiny-label">FOLLOW US</span>{socials.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}<ArrowUpRight size={15} /></a>)}</div><div className="footer-note"><span className="tiny-label">GOOD PEOPLE. GREAT MOMENTS.</span><p>Bring your idea.<br />We’ll bring the energy.</p><a href="mailto:trneventsnepal3@gmail.com">trneventsnepal3@gmail.com</a></div></div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} TRN EVENTS. ALL RIGHTS RESERVED.</span><span>MADE TO BE FELT.</span><a href="#home">BACK TO TOP <ArrowUpRight size={14} /></a></div>
         </footer>
       </main>
