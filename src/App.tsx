@@ -167,7 +167,7 @@ function App() {
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
             <div className="hero-gallery-caption"><span className="tiny-label">[ MORE THAN AN EVENT ]</span><p>It’s a feeling.<br />Let’s make it last.</p></div>
             <div className="hero-gallery" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
-              {[0, 1].map((copy) => <div className="hero-gallery-track" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}
+              <div className="hero-gallery-track">{[0, 1].map((copy) => <div className="hero-gallery-group" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={`${copy}-${image}`}><img src={`/pics/${image}`} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}</div>
             </div>
           </div>
         </section>
@@ -203,7 +203,7 @@ function App() {
 
         <section className="moments section-pad" aria-labelledby="moments-title">
           <div className="moments-heading"><span className="tiny-label">[ THE BIG PICTURE. THE LITTLE DETAILS. ]</span><span className="tiny-label">THAT’S WHERE THE MAGIC IS.</span></div>
-          <div className="moment-gallery">{[0, 1].map((copy) => <div className="moment-track" key={copy} aria-hidden={copy === 1}>{momentsCarouselImages.map((image) => <div className="moment-image" key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div>
+          <div className="moment-gallery"><div className="moment-track">{[0, 1].map((copy) => <div className="moment-group" key={copy} aria-hidden={copy === 1}>{momentsCarouselImages.map((image) => <div className="moment-image" key={`${copy}-${image}`}><img src={`/pics/${image}`} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div></div>
           <div className="moments-footer"><h2 id="moments-title" data-reveal>LESS ORDINARY.<br /><span className="red-text">MORE “YOU HAD TO BE THERE.”</span></h2><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
         </section>
 
