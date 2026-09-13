@@ -159,7 +159,7 @@ function App() {
       <main id="main">
         <section className="hero" id="home" aria-label="TRN Events">
           <div className="hero-stage">
-            <div className="hero-photo"><img src="/images/hero-concert.jpg" alt="A concert crowd under a sky of vivid red stage light" fetchPriority="high" width="1800" height="1202" /><div className="hero-shade" /></div>
+            <div className="hero-photo"><video className="hero-video" src="/images/hero-video.mp4" autoPlay muted loop playsInline preload="auto" /><div className="hero-shade" /></div>
             <h1 className="hero-title" aria-label="TRN Events"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">EVENTS</span></span></h1>
             <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
