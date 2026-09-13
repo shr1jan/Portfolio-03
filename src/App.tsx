@@ -10,20 +10,17 @@ import WelcomeDialog from './components/WelcomeDialog'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const navigation = [{ label: 'Home', href: '#home' }, { label: 'Projects', href: '#projects' }, { label: 'About', href: '#about' }]
+const socials = [
+  { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61573707875970' },
+  { label: 'Instagram', href: 'https://www.instagram.com/trn_events_nepal/?hl=en' },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@trn_events_nepal' },
+]
 const experiences = [
   { title: 'AFTER DARK.', category: 'Live events', image: 'purple-concert.jpg', alt: 'An audience beneath purple spotlights at a live concert', description: 'The lights drop. The crowd comes alive. We bring together the stage, sound, production, and people for a night that stays with you.' },
   { title: 'FESTIVAL SEASON.', category: 'Live events', image: 'festival.jpg', alt: 'A huge outdoor music festival stage at night', description: 'Weekends built for thousands. Big stages, bigger sounds, and a sea of people moving as one from the opening act to the final encore.' },
   { title: 'CLUB NIGHTS.', category: 'Live events', image: 'dj.jpg', alt: 'A DJ performing in magenta stage light', description: 'Dance floors, strobes, and sweat. Late sets where the DJ takes over and the room lets go until the lights come up.' },
 ]
-const galleryImages = [
-  { image: 'gala.jpg', projectIndex: 1, alt: 'A formal dinner setting in an ornate venue' },
-  { image: 'dj.jpg', projectIndex: 0, alt: 'A DJ playing music in magenta stage light' },
-  { image: 'festival.jpg', projectIndex: 0, alt: 'A large outdoor music festival stage' },
-  { image: 'wedding.jpg', projectIndex: 1, alt: 'Candlelit tables for a private celebration' },
-  { image: 'conference.jpg', projectIndex: 2, alt: 'A live event stage with an immersive lighting installation' },
-  { image: 'confetti.jpg', projectIndex: 2, alt: 'A crowd celebrating under colourful stage lighting' },
-]
+const momentsImages = ['IMG_0661.JPEG', 'IMG_0662.JPEG', 'IMG_0665.JPEG', 'IMG_0666.JPEG', 'IMG_0669.JPEG', 'IMG_0673.JPEG', 'IMG_0674.JPG.jpeg', 'IMG_0675.JPG.jpeg', 'IMG_0676.JPG.jpeg']
 
 function RollingLabel({ children }: { children: string }) {
   return <span className="rolling-label"><span>{children}</span><span aria-hidden="true">{children}</span></span>
@@ -31,7 +28,6 @@ function RollingLabel({ children }: { children: string }) {
 
 function App() {
   const root = useRef<HTMLDivElement>(null)
-  const galleryDrag = useRef<{ start: number; offset: number; active: boolean }>({ start: 0, offset: 0, active: false })
   const lenis = useRef<Lenis | null>(null)
   const projectDialog = useRef<HTMLDialogElement>(null)
   const [contactOpen, setContactOpen] = useState(false)
@@ -156,26 +152,8 @@ function App() {
             <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
             <div className="hero-gallery-caption"><span className="tiny-label">[ MORE THAN AN EVENT ]</span><p>It’s a feeling.<br />Let’s make it last.</p></div>
-            <div className="hero-gallery" aria-label="Event photo gallery. Drag or use arrow keys to explore." role="region" tabIndex={0}
-              onPointerDown={(event) => {
-                if (event.pointerType === 'mouse' && event.button !== 0) return
-                galleryDrag.current = { start: event.clientX, offset: Number(gsap.getProperty(event.currentTarget, 'x')) || 0, active: true }
-                event.currentTarget.setPointerCapture(event.pointerId)
-              }}
-              onPointerMove={(event) => {
-                if (!galleryDrag.current.active) return
-                const x = Math.max(-180, Math.min(180, galleryDrag.current.offset + event.clientX - galleryDrag.current.start))
-                gsap.to(event.currentTarget, { x, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
-              }}
-              onPointerUp={() => { galleryDrag.current.active = false }}
-              onPointerCancel={() => { galleryDrag.current.active = false }}
-              onKeyDown={(event) => {
-                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
-                event.preventDefault()
-                const current = Number(gsap.getProperty(event.currentTarget, 'x')) || 0
-                gsap.set(event.currentTarget, { x: Math.max(-180, Math.min(180, current + (event.key === 'ArrowLeft' ? 80 : -80))) })
-              }}>
-              {galleryImages.map((item, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={item.image}><img src={`/images/${item.image}`} alt={item.alt} draggable={false} width="600" height="700" /></div>)}
+            <div className="hero-gallery" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
+              {[0, 1].map((copy) => <div className="hero-gallery-track" key={copy} aria-hidden={copy === 1}>{momentsImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}
             </div>
           </div>
         </section>
@@ -211,12 +189,12 @@ function App() {
 
         <section className="moments section-pad" aria-labelledby="moments-title">
           <div className="moments-heading"><span className="tiny-label">[ THE BIG PICTURE. THE LITTLE DETAILS. ]</span><span className="tiny-label">THAT’S WHERE THE MAGIC IS.</span></div>
-          <div className="moment-gallery">{galleryImages.map((item) => <button className="moment-image" key={item.image} onClick={() => setSelectedProject(item.projectIndex)} aria-label={`Explore event inspiration: ${item.alt}`}><img src={`/images/${item.image}`} alt={item.alt} loading="lazy" width="600" height="800" /></button>)}</div>
+          <div className="moment-gallery">{[0, 1].map((copy) => <div className="moment-track" key={copy} aria-hidden={copy === 1}>{momentsImages.map((image) => <div className="moment-image" key={image}><img src={`/pics/${image}`} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div>
           <div className="moments-footer"><h2 id="moments-title" data-reveal>LESS ORDINARY.<br /><span className="red-text">MORE “YOU HAD TO BE THERE.”</span></h2><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
         </section>
 
         <footer className="footer section-pad" id="contact">
-          <div className="footer-main"><a className="footer-brand" href="#home" aria-label="TRN Events home">TRN<span className="red-text">.</span><br />EVENTS</a><div className="footer-links"><span className="tiny-label">COME ON IN</span>{navigation.map((item) => <a key={item.label} href={item.href}>{item.label}<ArrowUpRight size={15} /></a>)}<button onClick={() => openContact()}>Contact<ArrowUpRight size={15} /></button></div><div className="footer-note"><span className="tiny-label">GOOD PEOPLE. GREAT MOMENTS.</span><p>Bring your idea.<br />We’ll bring the energy.</p><a href="mailto:trnevents@gmail.com">trnevents@gmail.com</a></div></div>
+          <div className="footer-main"><a className="footer-brand" href="#home" aria-label="TRN NEPAL home">TRN<span className="red-text">.</span><br />NEPAL</a><div className="footer-links"><span className="tiny-label">FOLLOW US</span>{socials.map((item) => <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}<ArrowUpRight size={15} /></a>)}</div><div className="footer-note"><span className="tiny-label">GOOD PEOPLE. GREAT MOMENTS.</span><p>Bring your idea.<br />We’ll bring the energy.</p><a href="mailto:trnevents@gmail.com">trnevents@gmail.com</a></div></div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} TRN EVENTS. ALL RIGHTS RESERVED.</span><span>MADE TO BE FELT.</span><a href="#home">BACK TO TOP <ArrowUpRight size={14} /></a></div>
         </footer>
       </main>
