@@ -3,14 +3,14 @@ import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, Pause, Play, X } f
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
-import Services from './components/Services'
+
 import UpcomingEvents from './components/Events'
 import ContactDialog from './components/ContactDialog'
 import WelcomeDialog from './components/WelcomeDialog'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const navigation = [{ label: 'Home', href: '#home' }, { label: 'Projects', href: '#projects' }, { label: 'Services', href: '#services' }, { label: 'About', href: '#about' }]
+const navigation = [{ label: 'Home', href: '#home' }, { label: 'Projects', href: '#projects' }, { label: 'About', href: '#about' }]
 const experiences = [
   { title: 'AFTER DARK.', category: 'Live events', image: 'purple-concert.jpg', alt: 'An audience beneath purple spotlights at a live concert', description: 'The lights drop. The crowd comes alive. We bring together the stage, sound, production, and people for a night that stays with you.' },
   { title: 'FESTIVAL SEASON.', category: 'Live events', image: 'festival.jpg', alt: 'A huge outdoor music festival stage at night', description: 'Weekends built for thousands. Big stages, bigger sounds, and a sea of people moving as one from the opening act to the final encore.' },
@@ -84,28 +84,19 @@ function App() {
     const header = document.querySelector<HTMLElement>('.site-header')!
     let lightRanges: [number, number][] = []
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const accentChips: { el: HTMLElement | null; light: string; dark: string }[] = [
-      { el: document.querySelector('.brand-mark'), light: '#000080', dark: '#ff0033' },
-    ]
+    const brandMark = document.querySelector<HTMLElement>('.brand-mark')!
+    const brandWipe = document.querySelector<HTMLElement>('.brand-mark-img')!
     let wasLight: boolean | null = null
     const wipeChips = (toLight: boolean, scrollUp: boolean) => {
-      if (prefersReducedMotion.matches) return
-      accentChips.forEach(({ el, light, dark }) => {
-        if (!el) return
-        const from = toLight ? dark : light
-        const to = toLight ? light : dark
-        const start = scrollUp ? '0% 0%' : '0% 100%'
-        const end = scrollUp ? '0% 100%' : '0% 0%'
-        const stops = scrollUp ? `${to} 50%, ${from} 50%` : `${from} 50%, ${to} 50%`
-        gsap.killTweensOf(el)
-        gsap.set(el, { backgroundImage: `linear-gradient(to top, ${stops})`, backgroundSize: '100% 200%', backgroundPosition: start, backgroundColor: from })
-        gsap.to(el, {
-          backgroundPosition: end,
-          duration: 0.185,
-          ease: 'power2.inOut',
-          onComplete: () => gsap.set(el, { backgroundImage: 'none', backgroundPosition: '0% 0%', backgroundColor: to }),
-        })
-      })
+      if (!brandMark || !brandWipe) return
+      const toImg = `url(/images/${toLight ? 'light' : 'dark'}.png)`
+      const fromImg = `url(/images/${toLight ? 'dark' : 'light'}.png)`
+      const clip = scrollUp ? 'inset(0 0 100% 0)' : 'inset(100% 0 0 0)'
+      gsap.killTweensOf(brandWipe)
+      gsap.set(brandMark, { backgroundImage: toImg })
+      gsap.set(brandWipe, { backgroundImage: fromImg, clipPath: 'inset(0 0 0 0)' })
+      if (prefersReducedMotion.matches) { gsap.set(brandWipe, { clipPath: clip }); return }
+      gsap.to(brandWipe, { clipPath: clip, duration: 0.185, ease: 'power2.inOut' })
     }
     let lastScrollY = window.scrollY
     const updateHeader = () => {
@@ -117,6 +108,7 @@ function App() {
       const heroLight = current < heroSection.offsetHeight && heroPhoto.getBoundingClientRect().bottom < 44
       const light = heroLight || lightRanges.some(([start, end]) => current >= start && current < end)
       header.classList.toggle('is-light', light)
+      brandMark.style.backgroundImage = `url(/images/${light ? 'light' : 'dark'}.png)`
       if (wasLight !== null && light !== wasLight) wipeChips(light, !scrollUp)
       wasLight = light
     }
@@ -152,7 +144,7 @@ function App() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="header-left">
-          <a href="#home" className="brand-mark" aria-label="TRN Events home" />
+          <a href="#home" className="brand-mark" aria-label="TRN Events home" style={{ backgroundImage: 'url(/images/light.png)' }}><span className="brand-mark-img" /></a>
         </div>
       </header>
 
@@ -160,7 +152,7 @@ function App() {
         <section className="hero" id="home" aria-label="TRN Events">
           <div className="hero-stage">
             <div className="hero-photo"><video className="hero-video" src="/images/hero-video.mp4" autoPlay muted loop playsInline preload="auto" /><div className="hero-shade" /></div>
-            <h1 className="hero-title" aria-label="TRN Events"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">EVENTS</span></span></h1>
+            <h1 className="hero-title" aria-label="TRN NEPAL"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">NEPAL</span></span></h1>
             <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
             <div className="hero-gallery-caption"><span className="tiny-label">[ MORE THAN AN EVENT ]</span><p>It’s a feeling.<br />Let’s make it last.</p></div>
@@ -216,8 +208,6 @@ function App() {
           <div className="marquee-track" aria-hidden="true">{[0, 1].map((copy) => <div className="marquee-group" key={copy}><span>DREAM IT</span><ArrowRight /><span>PLAN IT</span><ArrowRight /><span>BUILD IT</span><ArrowRight /><span>LIVE IT</span><ArrowRight /></div>)}</div>
           <button className="motion-toggle" onClick={() => setMotionPaused(!motionPaused)} aria-label={motionPaused ? 'Play moving text' : 'Pause moving text'}>{motionPaused ? <Play size={14} /> : <Pause size={14} />}</button>
         </div>
-
-        <Services />
 
         <section className="moments section-pad" aria-labelledby="moments-title">
           <div className="moments-heading"><span className="tiny-label">[ THE BIG PICTURE. THE LITTLE DETAILS. ]</span><span className="tiny-label">THAT’S WHERE THE MAGIC IS.</span></div>

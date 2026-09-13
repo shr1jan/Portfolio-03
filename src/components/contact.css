@@ -10,7 +10,7 @@
   border: 0;
   border-radius: 0;
   color: var(--ink, #171717);
-  background: var(--paper, #f8f7f6);
+  background: var(--paper, #fefefe);
   font-family: 'Work Sans Variable', 'Work Sans', sans-serif;
   scrollbar-width: thin;
   scrollbar-color: var(--ink, #171717) transparent;
@@ -56,7 +56,7 @@
 }
 
 .contact-dialog__close:hover {
-  color: var(--paper, #f8f7f6);
+  color: var(--paper, #fefefe);
   background: var(--ink, #171717);
 }
 
@@ -180,7 +180,7 @@
 
 .contact-form__submit:hover {
   border-color: var(--ink, #171717);
-  color: var(--paper, #f8f7f6);
+  color: var(--paper, #fefefe);
   background: var(--ink, #171717);
 }
 
