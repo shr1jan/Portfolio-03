@@ -86,8 +86,6 @@ function App() {
           .to('.hero-title', { color: '#171717', scale: 0.76, ease: 'none' }, 0.22)
           .to('.brand-period', { color: '#000080', ease: 'none' }, 0.22)
           .to('.hero-bottom, .hero-side-note', { opacity: 0, duration: 0.12 }, 0)
-          .fromTo('.hero-gallery', { yPercent: 135, y: 0 }, { yPercent: 0, y: 0, ease: 'none', duration: 0.65 }, 0.18)
-          .fromTo('.hero-gallery-caption', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.65)
         gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((element) => {
           gsap.from(element, { y: 55, opacity: 0, duration: 0.95, ease: 'power3.out', scrollTrigger: { trigger: element, start: 'top 90%', once: true } })
         })
@@ -112,7 +110,7 @@ function App() {
       header.classList.toggle('is-light', light)
     }
     const measureRanges = () => {
-      lightRanges = [...document.querySelectorAll<HTMLElement>('.manifesto, .moments, .footer')].map(element => {
+      lightRanges = [...document.querySelectorAll<HTMLElement>('.moments, .footer')].map(element => {
         const rect = element.getBoundingClientRect()
         return [rect.top + window.scrollY, rect.bottom + window.scrollY]
       })
@@ -154,17 +152,23 @@ function App() {
             <h1 className="hero-title" aria-label="TRN Events Nepal"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">EVENTS</span></span><span className="word-clip"><span className="word-inner">NEPAL</span></span></h1>
             <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
-            <div className="hero-gallery-caption"><span className="tiny-label">[ MORE THAN AN EVENT ]</span><p>It’s a feeling.<br />Let’s make it last.</p></div>
-            <div className="hero-gallery" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
-              <div className="hero-gallery-track">{[0, 1].map((copy) => <div className="hero-gallery-group" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={`${copy}-${image}`}><img src={image} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}</div>
-            </div>
           </div>
         </section>
 
-        <section className="manifesto section-pad">
-          <span className="tiny-label" data-reveal>[ THE TRN WAY ]</span>
-          <h2 data-reveal>BRING THE PEOPLE.<br /><span className="manifesto-indent">BUILD THE <span className="red-text">FEELING.</span></span><br />MAKE IT UNFORGETTABLE.</h2>
-          <div className="manifesto-bottom" data-reveal><ArrowDownRight size={42} weight="light" /><p>From the first idea to the final encore,<br />we bring your world together.</p><a href="#about" className="text-link"><RollingLabel>MEET TRN EVENTS</RollingLabel><ArrowUpRight size={19} /></a></div>
+        <section className="trn-way section-pad" id="trn-way">
+          <div className="trn-way-carousel" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
+            <div className="trn-way-carousel-track">{[0, 1].map((copy) => <div className="trn-way-carousel-group" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image) => <div className="trn-way-carousel-item" key={`${copy}-${image}`}><img src={image} alt="TRN NEPAL event" draggable={false} loading="lazy" /></div>)}</div>)}</div>
+          </div>
+          <div className="trn-way-content">
+            <div className="trn-way-left">
+              <span className="tiny-label" data-reveal>[ THE TRN WAY ]</span>
+              <h2 data-reveal>BRING THE PEOPLE.<br />BUILD THE <span className="trn-way-accent">FEELING.</span><br />MAKE IT UNFORGETTABLE.</h2>
+            </div>
+            <div className="trn-way-right" data-reveal>
+              <div className="trn-way-description"><ArrowDownRight size={42} weight="light" /><p>From the first idea to the final encore, we bring your world together. It's a feeling. Let's make it last.</p></div>
+              <a href="#about" className="trn-way-link"><RollingLabel>MEET TRN EVENTS</RollingLabel><ArrowUpRight size={19} /></a>
+            </div>
+          </div>
         </section>
 
         <UpcomingEvents onContact={openContact} />
