@@ -16,11 +16,21 @@ const socials = [
   { label: 'TikTok', href: 'https://www.tiktok.com/@trn_events_nepal' },
 ]
 const experiences = [
-  { title: 'AFTER DARK.', category: 'Live events', image: 'purple-concert.jpg', alt: 'An audience beneath purple spotlights at a live concert', description: 'The lights drop. The crowd comes alive. We bring together the stage, sound, production, and people for a night that stays with you.' },
-  { title: 'FESTIVAL SEASON.', category: 'Live events', image: 'festival.jpg', alt: 'A huge outdoor music festival stage at night', description: 'Weekends built for thousands. Big stages, bigger sounds, and a sea of people moving as one from the opening act to the final encore.' },
-  { title: 'CLUB NIGHTS.', category: 'Live events', image: 'dj.jpg', alt: 'A DJ performing in magenta stage light', description: 'Dance floors, strobes, and sweat. Late sets where the DJ takes over and the room lets go until the lights come up.' },
+  { title: 'AFTER DARK.', category: 'Live events', image: 'https://images.pexels.com/photos/13230484/pexels-photo-13230484.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800', alt: 'An audience beneath purple spotlights at a live concert', description: 'The lights drop. The crowd comes alive. We bring together the stage, sound, production, and people for a night that stays with you.' },
+  { title: 'FESTIVAL SEASON.', category: 'Live events', image: 'https://images.pexels.com/photos/3563172/pexels-photo-3563172.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800', alt: 'A huge outdoor music festival stage at night', description: 'Weekends built for thousands. Big stages, bigger sounds, and a sea of people moving as one from the opening act to the final encore.' },
+  { title: 'CLUB NIGHTS.', category: 'Live events', image: 'https://images.pexels.com/photos/9005458/pexels-photo-9005458.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800', alt: 'A DJ performing in magenta stage light', description: 'Dance floors, strobes, and sweat. Late sets where the DJ takes over and the room lets go until the lights come up.' },
 ]
-const picSources = ['IMG_0661.JPEG', 'IMG_0662.JPEG', 'IMG_0665.JPEG', 'IMG_0666.JPEG', 'IMG_0669.JPEG', 'IMG_0673.JPEG', 'IMG_0674.JPG.jpeg', 'IMG_0675.JPG.jpeg', 'IMG_0676.JPG.jpeg']
+const picSources = [
+  'https://images.pexels.com/photos/13202532/pexels-photo-13202532.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/22604116/pexels-photo-22604116.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/5193526/pexels-photo-5193526.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/5191480/pexels-photo-5191480.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/5152571/pexels-photo-5152571.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/1179581/pexels-photo-1179581.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/167605/pexels-photo-167605.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/5192273/pexels-photo-5192273.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+  'https://images.pexels.com/photos/7081216/pexels-photo-7081216.jpeg?auto=compress&cs=tinysrgb&w=940&h=650',
+]
 
 function randomize<T>(items: readonly T[]): T[] {
   const a = [...items]
@@ -93,34 +103,13 @@ function App() {
     }, root)
     const header = document.querySelector<HTMLElement>('.site-header')!
     let lightRanges: [number, number][] = []
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const brandMark = document.querySelector<HTMLElement>('.brand-mark')!
-    const brandWipe = document.querySelector<HTMLElement>('.brand-mark-img')!
-    let wasLight: boolean | null = null
-    const wipeChips = (toLight: boolean, scrollUp: boolean) => {
-      if (!brandMark || !brandWipe) return
-      const toImg = `url(/images/${toLight ? 'light' : 'dark'}.png)`
-      const fromImg = `url(/images/${toLight ? 'dark' : 'light'}.png)`
-      const clip = scrollUp ? 'inset(0 0 100% 0)' : 'inset(100% 0 0 0)'
-      gsap.killTweensOf(brandWipe)
-      gsap.set(brandMark, { backgroundImage: toImg })
-      gsap.set(brandWipe, { backgroundImage: fromImg, clipPath: 'inset(0 0 0 0)' })
-      if (prefersReducedMotion.matches) { gsap.set(brandWipe, { clipPath: clip }); return }
-      gsap.to(brandWipe, { clipPath: clip, duration: 0.185, ease: 'power2.inOut' })
-    }
-    let lastScrollY = window.scrollY
     const updateHeader = () => {
       const current = window.scrollY + 44
-      const scrollUp = window.scrollY < lastScrollY
-      lastScrollY = window.scrollY
       const heroPhoto = document.querySelector<HTMLElement>('.hero-photo')!
       const heroSection = document.querySelector<HTMLElement>('.hero')!
       const heroLight = current < heroSection.offsetHeight && heroPhoto.getBoundingClientRect().bottom < 44
       const light = heroLight || lightRanges.some(([start, end]) => current >= start && current < end)
       header.classList.toggle('is-light', light)
-      brandMark.style.backgroundImage = `url(/images/${light ? 'light' : 'dark'}.png)`
-      if (wasLight !== null && light !== wasLight) wipeChips(light, !scrollUp)
-      wasLight = light
     }
     const measureRanges = () => {
       lightRanges = [...document.querySelectorAll<HTMLElement>('.manifesto, .moments, .footer')].map(element => {
@@ -154,20 +143,20 @@ function App() {
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="header-left">
-          <a href="#home" className="brand-mark" aria-label="TRN Events home" style={{ backgroundImage: 'url(/images/light.png)' }}><span className="brand-mark-img" /></a>
+          <a href="#home" className="brand-mark" aria-label="TRN Events home">TRN<span className="brand-period">.</span></a>
         </div>
       </header>
 
       <main id="main">
         <section className="hero" id="home" aria-label="TRN Events">
           <div className="hero-stage">
-            <div className="hero-photo"><video className="hero-video" src="/images/hero-video.mp4" autoPlay muted loop playsInline preload="auto" /><div className="hero-shade" /></div>
+            <div className="hero-photo"><img src="https://images.pexels.com/photos/36882728/pexels-photo-36882728.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080" alt="TRN NEPAL event" /><div className="hero-shade" /></div>
             <h1 className="hero-title" aria-label="TRN Events Nepal"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">EVENTS</span></span><span className="word-clip"><span className="word-inner">NEPAL</span></span></h1>
             <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
             <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
             <div className="hero-gallery-caption"><span className="tiny-label">[ MORE THAN AN EVENT ]</span><p>It’s a feeling.<br />Let’s make it last.</p></div>
             <div className="hero-gallery" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
-              <div className="hero-gallery-track">{[0, 1].map((copy) => <div className="hero-gallery-group" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={`${copy}-${image}`}><img src={`/pics/${image}`} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}</div>
+              <div className="hero-gallery-track">{[0, 1].map((copy) => <div className="hero-gallery-group" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image, index) => <div className={`hero-gallery-item gallery-item-${index}`} key={`${copy}-${image}`}><img src={image} alt="TRN NEPAL event" draggable={false} /></div>)}</div>)}</div>
             </div>
           </div>
         </section>
@@ -184,7 +173,7 @@ function App() {
           <div className="project-heading"><div><span className="tiny-label">[ EVENT INSPIRATION ]</span><h2>PAST <span className="red-text">EVENTS.</span></h2></div><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
           <div className="project-track">
             {experiences.map((project, index) => <button className="project-card" key={project.title} onClick={() => setSelectedProject(index)} aria-label={`Explore ${project.category.toLowerCase()}`}>
-              <div className="project-image"><img src={`/images/${project.image}`} alt={project.alt} loading="lazy" width="1200" height="800" /><span className="project-view">EXPLORE<ArrowUpRight size={22} /></span></div>
+              <div className="project-image"><img src={project.image} alt={project.alt} loading="lazy" width="1200" height="800" /><span className="project-view">EXPLORE<ArrowUpRight size={22} /></span></div>
               <div className="project-caption"><h3>{project.title}</h3><span className="tiny-label">{project.category}<ArrowUpRight size={18} /></span></div>
             </button>)}
           </div>
@@ -203,7 +192,7 @@ function App() {
 
         <section className="moments section-pad" aria-labelledby="moments-title">
           <div className="moments-heading"><span className="tiny-label">[ THE BIG PICTURE. THE LITTLE DETAILS. ]</span><span className="tiny-label">THAT’S WHERE THE MAGIC IS.</span></div>
-          <div className="moment-gallery"><div className="moment-track">{[0, 1].map((copy) => <div className="moment-group" key={copy} aria-hidden={copy === 1}>{momentsCarouselImages.map((image) => <div className="moment-image" key={`${copy}-${image}`}><img src={`/pics/${image}`} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div></div>
+          <div className="moment-gallery"><div className="moment-track">{[0, 1].map((copy) => <div className="moment-group" key={copy} aria-hidden={copy === 1}>{momentsCarouselImages.map((image) => <div className="moment-image" key={`${copy}-${image}`}><img src={image} alt="TRN NEPAL event" loading="lazy" /></div>)}</div>)}</div></div>
           <div className="moments-footer"><h2 id="moments-title" data-reveal>LESS ORDINARY.<br /><span className="red-text">MORE “YOU HAD TO BE THERE.”</span></h2><button className="button button-red cornered" onClick={() => openContact()}><RollingLabel>MAKE YOUR MOMENT</RollingLabel><ArrowUpRight size={16} /></button></div>
         </section>
 
@@ -214,7 +203,7 @@ function App() {
       </main>
 
       <dialog className="project-dialog" ref={projectDialog} onCancel={() => setSelectedProject(null)} onClick={(event) => { if (event.target === event.currentTarget) setSelectedProject(null) }} aria-labelledby="project-title" data-lenis-prevent>
-        {selectedProject !== null && <div className="project-dialog-inner"><button className="dialog-close" onClick={() => setSelectedProject(null)} aria-label="Close event inspiration" autoFocus><X size={24} /></button><img className="project-dialog-image" src={`/images/${experiences[selectedProject].image}`} alt={experiences[selectedProject].alt} /><div className="project-dialog-copy"><span className="tiny-label">{experiences[selectedProject].category} / EVENT INSPIRATION</span><h2 id="project-title">{experiences[selectedProject].title}</h2><p>{experiences[selectedProject].description}</p><button className="button button-red" onClick={() => openContact(experiences[selectedProject].category)}>MAKE SOMETHING LIKE THIS<ArrowUpRight size={18} /></button></div></div>}
+        {selectedProject !== null && <div className="project-dialog-inner"><button className="dialog-close" onClick={() => setSelectedProject(null)} aria-label="Close event inspiration" autoFocus><X size={24} /></button><img className="project-dialog-image" src={experiences[selectedProject].image} alt={experiences[selectedProject].alt} /><div className="project-dialog-copy"><span className="tiny-label">{experiences[selectedProject].category} / EVENT INSPIRATION</span><h2 id="project-title">{experiences[selectedProject].title}</h2><p>{experiences[selectedProject].description}</p><button className="button button-red" onClick={() => openContact(experiences[selectedProject].category)}>MAKE SOMETHING LIKE THIS<ArrowUpRight size={18} /></button></div></div>}
       </dialog>
       <ContactDialog open={contactOpen} onClose={() => setContactOpen(false)} eventType={eventType} />
       <WelcomeDialog open={welcomeOpen} onClose={() => setWelcomeOpen(false)} />
