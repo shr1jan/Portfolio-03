@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, Pause, Play, X } from '@phosphor-icons/react'
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Pause, Play, X } from '@phosphor-icons/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
@@ -79,13 +79,6 @@ function App() {
     })
     const ctx = gsap.context(() => {
       media.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.from('.hero-title .word-inner', { yPercent: 110, duration: 1.3, stagger: 0.12, ease: 'power4.out', delay: 0.12 })
-        gsap.from('.hero-bottom, .hero-side-note', { opacity: 0, y: 15, duration: 0.8, delay: 0.6 })
-        const hero = gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom bottom', scrub: 0.8 } })
-        hero.to('.hero-photo', { yPercent: -100, ease: 'none' }, 0)
-          .to('.hero-title', { color: '#171717', scale: 0.76, ease: 'none' }, 0.22)
-          .to('.brand-period', { color: '#000080', ease: 'none' }, 0.22)
-          .to('.hero-bottom, .hero-side-note', { opacity: 0, duration: 0.12 }, 0)
         gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((element) => {
           gsap.from(element, { y: 55, opacity: 0, duration: 0.95, ease: 'power3.out', scrollTrigger: { trigger: element, start: 'top 90%', once: true } })
         })
@@ -103,10 +96,7 @@ function App() {
     let lightRanges: [number, number][] = []
     const updateHeader = () => {
       const current = window.scrollY + 44
-      const heroPhoto = document.querySelector<HTMLElement>('.hero-photo')!
-      const heroSection = document.querySelector<HTMLElement>('.hero')!
-      const heroLight = current < heroSection.offsetHeight && heroPhoto.getBoundingClientRect().bottom < 44
-      const light = heroLight || lightRanges.some(([start, end]) => current >= start && current < end)
+      const light = lightRanges.some(([start, end]) => current >= start && current < end)
       header.classList.toggle('is-light', light)
     }
     const measureRanges = () => {
@@ -146,16 +136,7 @@ function App() {
       </header>
 
       <main id="main">
-        <section className="hero" id="home" aria-label="TRN Events">
-          <div className="hero-stage">
-            <div className="hero-photo"><img src="https://images.pexels.com/photos/36882728/pexels-photo-36882728.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080" alt="TRN NEPAL event" /><div className="hero-shade" /></div>
-            <h1 className="hero-title" aria-label="TRN Events Nepal"><span className="word-clip"><span className="word-inner">TRN<span className="brand-period">.</span></span></span><span className="word-clip"><span className="word-inner">EVENTS</span></span><span className="word-clip"><span className="word-inner">NEPAL</span></span></h1>
-            <div className="hero-side-note"><span className="tiny-label">EVENTS. EXPERIENCES. ENERGY.</span><p>You bring the people.<br />We make the moment.</p></div>
-            <div className="hero-bottom"><p>BIG IDEAS.<br />UNFORGETTABLE NIGHTS.</p><a href="#projects" className="hero-scroll"><span>DISCOVER WHAT’S POSSIBLE</span><span className="round-arrow"><ArrowDown size={20} /></span></a></div>
-          </div>
-        </section>
-
-        <section className="trn-way section-pad" id="trn-way">
+        <section className="trn-way section-pad" id="home">
           <div className="trn-way-carousel" aria-label="Event photo gallery scrolling automatically." role="region" tabIndex={0}>
             <div className="trn-way-carousel-track">{[0, 1].map((copy) => <div className="trn-way-carousel-group" key={copy} aria-hidden={copy === 1}>{heroGalleryImages.map((image) => <div className="trn-way-carousel-item" key={`${copy}-${image}`}><img src={image} alt="TRN NEPAL event" draggable={false} loading="lazy" /></div>)}</div>)}</div>
           </div>
